@@ -1,0 +1,5 @@
+# Aufbau Explorer uses only the Python standard library.
+# No third-party packages are required.
+#
+# Requires: Python >= 3.10
+# Optional system package: python3-tk (Linux) for the GUI
