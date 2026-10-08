@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aufbau Explorer — Electron Configuration (Web Edition)</title>
+<meta name="description" content="Interactive electron configuration explorer running entirely in the browser via Pyodide (Python/WebAssembly). No server required.">
+<link rel="stylesheet" href="static/style.css">
+<!-- Pyodide: runs the Python physics engine (app.py) as WebAssembly, client-side only. -->
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+</head>
+<body>
+<header>
+  <h1>Aufbau Explorer</h1>
+  <p class="subtitle">Electron configuration &amp; the Madelung (n+ℓ) rule — powered by Python in your browser (Pyodide/WASM)</p>
+</header>
+
+<div id="loading" class="loading">
+  <div class="spinner"></div>
+  <p>Loading Python runtime (Pyodide) and the physics engine…</p>
+</div>
+
+<main id="app" hidden>
+  <section class="controls" aria-label="Controls">
+    <div class="control-row">
+      <input id="search" type="text" placeholder="Search element: symbol, name, or Z (e.g. Fe, iron, 26)" autocomplete="off">
+      <button id="searchBtn">Go</button>
+      <button id="prevBtn" title="Previous element (←)">◀</button>
+      <button id="nextBtn" title="Next element (→)">▶</button>
+    </div>
+
+    <div class="control-row">
+      <button id="resetBtn" title="Reset (R)">⏮ Reset</button>
+      <button id="stepBackBtn" title="Step back (,)">⏴ Step</button>
+      <button id="playBtn" title="Play / pause (Space)">▶ Play</button>
+      <button id="stepFwdBtn" title="Step forward (.)">Step ⏵</button>
+      <button id="fillAllBtn" title="Fill completely">Full ⏭</button>
+      <input id="slider" type="range" min="0" max="1" value="0" step="1" aria-label="Electrons placed">
+      <span id="sliderLabel">0 / 0 e⁻</span>
+    </div>
+
+    <div class="control-row">
+      <div class="seg" role="group" aria-label="Fill mode">
+        <button id="modeObserved" class="seg-btn active" data-mode="observed">Observed</button>
+        <button id="modeAufbau" class="seg-btn" data-mode="aufbau">Pure Aufbau</button>
+      </div>
+      <div class="seg" role="group" aria-label="Speed">
+        <button class="seg-btn speed-btn" data-ms="700">Slow</button>
+        <button class="seg-btn speed-btn active" data-ms="280">Med</button>
+        <button class="seg-btn speed-btn" data-ms="90">Fast</button>
+      </div>
+      <div class="seg" role="group" aria-label="View">
+        <button class="seg-btn view-btn active" data-view="atom">Atom view</button>
+        <button class="seg-btn view-btn" data-view="fill">Fill order</button>
+        <button class="seg-btn view-btn" data-view="orbitals">Orbital boxes</button>
+        <button class="seg-btn view-btn" data-view="table">Periodic table</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="info" aria-label="Element information">
+    <div class="info-main">
+      <div class="symbol" id="infoSymbol">H</div>
+      <div class="info-text">
+        <div class="name-row"><span id="infoName">Hydrogen</span><span id="infoZ">Z = 1</span><span id="infoCategory">nonmetal</span></div>
+        <div class="config" id="infoConfig">1s¹</div>
+        <div class="condensed" id="infoCondensed">—</div>
+        <div class="stats"><span id="infoUnpaired">0 unpaired e⁻</span><span id="infoException" class="exception-badge" hidden>Exception</span></div>
+      </div>
+    </div>
+    <p class="description" id="infoDescription">An empty atom. Press Play to watch electrons occupy orbitals in energy order.</p>
+    <p class="diff" id="infoDiff" hidden></p>
+  </section>
+
+  <section class="views">
+    <div id="view-atom" class="view-panel active">
+      <canvas id="atomCanvas" width="520" height="520" aria-label="Atom diagram"></canvas>
+    </div>
+
+    <div id="view-fill" class="view-panel">
+      <div id="fillOrderList" class="fill-order-list"></div>
+    </div>
+
+    <div id="view-orbitals" class="view-panel">
+      <div id="orbitalBoxes" class="orbital-boxes"></div>
+    </div>
+
+    <div id="view-table" class="view-panel">
+      <div id="periodicTable" class="periodic-table"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>Runs 100% client-side — no server, no build step. Python via <a href="https://pyodide.org" target="_blank" rel="noopener">Pyodide</a>. Source: <a href="https://github.com/" id="repoLink" target="_blank" rel="noopener">GitHub</a>.</p>
+</footer>
+
+<script src="static/script.js"></script>
+</body>
+</html>

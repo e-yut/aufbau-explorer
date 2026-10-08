@@ -2,6 +2,8 @@
 
 Interactive desktop application that visualizes how electrons fill atomic orbitals according to the **Aufbau principle** (Madelung *n*+*ℓ* rule), **Hund’s rule**, and the **Pauli exclusion principle**.
 
+> **New: Web Edition.** `index.html` + `app.py` run the same physics engine entirely in the browser via [Pyodide](https://pyodide.org) (Python compiled to WebAssembly) — no server, no build step, free to host on GitHub Pages. See [Web Edition](#web-edition-github-pages) below.
+
 Ground-state spectroscopic exceptions (Cr, Cu, Nb, Mo, Pd, Ag, lanthanides, actinides, and others) are included and can be compared with pure Madelung filling.
 
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
@@ -128,6 +130,66 @@ python aufbau.py Cr
 python aufbau.py Pd
 python aufbau.py Lr
 ```
+
+---
+
+## Web Edition (GitHub Pages)
+
+The repository root also contains a **static, client-side web app**:
+
+```text
+index.html        # UI shell + Pyodide CDN script tag
+static/style.css   # styling
+static/script.js    # DOM ⇄ Python glue (loads app.py into Pyodide)
+app.py             # physics engine, extracted from aufbau-explorer_v1.1.py
+                   # (no tkinter import — pure standard library, WASM-safe)
+```
+
+No Python server is involved: a visitor's browser downloads `pyodide.js`
+from a CDN, boots a CPython 3.x WebAssembly runtime, fetches `app.py` as
+plain text, and executes it in-browser. All physics (Madelung filling,
+Hund's rule, Pauli exclusion, spectroscopic exceptions) runs locally on
+the visitor's machine — nothing is sent to a server.
+
+### Run it locally
+
+Any static file server works (the browser must fetch `app.py` over
+HTTP, not `file://`):
+
+```bash
+python -m http.server 8000
+# then open http://localhost:8000/
+```
+
+### Publish to GitHub Pages
+
+```bash
+# 1. Initialize git (skip if already a repo) and commit the web files
+git init
+git add index.html app.py static README.md LICENSE requirements.txt .nojekyll
+git commit -m "Add Pyodide web edition of Aufbau Explorer"
+
+# 2. Create a new GitHub repository (replace YOUR_USERNAME)
+gh repo create YOUR_USERNAME/aufbau-explorer --public --source=. --remote=origin
+#    — or manually create the repo on github.com, then:
+# git remote add origin https://github.com/YOUR_USERNAME/aufbau-explorer.git
+
+# 3. Push
+git branch -M main
+git push -u origin main
+
+# 4. Enable GitHub Pages
+#    Settings → Pages → "Build and deployment" → Source: "Deploy from a branch"
+#    Branch: main, Folder: / (root)  → Save
+#    (equivalently via CLI: gh api repos/YOUR_USERNAME/aufbau-explorer/pages \
+#       -f source[branch]=main -f source[path]=/)
+
+# 5. Visit the live site a minute or two later:
+#    https://YOUR_USERNAME.github.io/aufbau-explorer/
+```
+
+The included `.nojekyll` file disables Jekyll processing so GitHub
+Pages serves `app.py` and `static/*` as plain static files untouched.
 
 ---
 
