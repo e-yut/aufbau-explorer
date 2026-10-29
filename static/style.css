@@ -29,6 +29,24 @@ header {
 }
 header h1 { margin: 0 0 0.25rem; font-size: 1.8rem; letter-spacing: 0.02em; }
 .subtitle { margin: 0; color: var(--muted); font-size: 0.9rem; }
+.instructions-btn { margin-top: 0.8rem; }
+
+dialog {
+  width: min(560px, calc(100% - 2rem));
+  max-height: min(80vh, 620px);
+  padding: 1.2rem;
+  background: var(--bg-elevated);
+  color: var(--fg);
+  border: 1px solid var(--border-s);
+  border-radius: 10px;
+}
+dialog::backdrop { background: rgb(0 0 0 / 70%); }
+.instructions-heading { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.instructions-heading h2 { margin: 0; font-size: 1.2rem; }
+.dialog-close { padding: 0.2rem 0.6rem; font-size: 1.4rem; line-height: 1.2; }
+.instructions-content { margin-top: 0.8rem; line-height: 1.5; }
+.instructions-content p { margin: 0.8rem 0; }
+.shortcut-note { color: var(--muted); }
 
 .loading {
   display: flex;

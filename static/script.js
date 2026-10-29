@@ -306,6 +306,9 @@ function highlightPeriodicTable(model) {
 // ─── Wiring ──────────────────────────────────────────────────────────────
 
 function wireControls() {
+  const instructionsDialog = document.getElementById("instructionsDialog");
+  document.getElementById("instructionsBtn").addEventListener("click", () => instructionsDialog.showModal());
+  document.getElementById("closeInstructionsBtn").addEventListener("click", () => instructionsDialog.close());
   document.getElementById("searchBtn").addEventListener("click", runSearch);
   document.getElementById("search").addEventListener("keydown", (e) => {
     if (e.key === "Enter") runSearch();

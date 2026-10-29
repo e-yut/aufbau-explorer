@@ -13,6 +13,7 @@
 <header>
   <h1>Aufbau Explorer</h1>
   <p class="subtitle">Electron configuration &amp; the Madelung (n+ℓ) rule — powered by Python in your browser (Pyodide/WASM)</p>
+  <button id="instructionsBtn" class="instructions-btn" aria-haspopup="dialog">Instructions</button>
 </header>
 
 <div id="loading" class="loading">
@@ -91,6 +92,19 @@
   </section>
 </main>
 
+<dialog id="instructionsDialog" aria-labelledby="instructionsTitle">
+  <div class="instructions-heading">
+    <h2 id="instructionsTitle">How to use Aufbau Explorer</h2>
+    <button id="closeInstructionsBtn" class="dialog-close" aria-label="Close instructions">×</button>
+  </div>
+  <div class="instructions-content">
+    <p><strong>Choose an element</strong> by searching its name, symbol, or atomic number, using the previous/next buttons, or selecting it in the periodic table.</p>
+    <p><strong>Explore electron filling</strong> with Play/Pause, Step, Reset, or Full. Drag the slider to any number of electrons; choose Slow, Med, or Fast to change playback speed.</p>
+    <p><strong>Compare configurations</strong> with Observed (including known exceptions) and Pure Aufbau (Madelung-rule prediction).</p>
+    <p><strong>Change the display</strong> to Atom view, Fill order, Orbital boxes, or Periodic table. The element details show its configuration, unpaired electrons, and exception notes.</p>
+    <p class="shortcut-note"><strong>Keyboard:</strong> Space plays/pauses, ← / → changes element, . steps forward, , steps back, and R resets.</p>
+  </div>
+</dialog>
 <footer>
   <p>Runs 100% client-side — no server, no build step. Python via <a href="https://pyodide.org" target="_blank" rel="noopener">Pyodide</a>. Source: <a href="https://github.com/" id="repoLink" target="_blank" rel="noopener">GitHub</a>.</p>
 </footer>
