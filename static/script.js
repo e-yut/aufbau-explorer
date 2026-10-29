@@ -19,15 +19,39 @@ const state = {
 let pyodide = null;
 
 async function boot() {
-  pyodide = await loadPyodide();
-  const src = await (await fetch("app.py")).text();
-  pyodide.FS.writeFile("app.py", src);
-  await pyodide.runPythonAsync(`
+  const loading = document.getElementById("loading");
+  const message = loading.querySelector("p");
+  const spinner = loading.querySelector(".spinner");
+  const slowTimer = setTimeout(() => {
+    message.textContent = "Still loading — the first visit downloads the Python runtime (~10 MB) and can take a while…";
+  }, 10000);
+
+  try {
+    if (typeof loadPyodide !== "function") {
+      throw new Error("The Pyodide runtime could not be downloaded from cdn.jsdelivr.net");
+    }
+    const [py, resp] = await Promise.all([loadPyodide(), fetch("app.py")]);
+    if (!resp.ok) throw new Error(`Could not load app.py (HTTP ${resp.status})`);
+    pyodide = py;
+    pyodide.FS.writeFile("app.py", await resp.text());
+    await pyodide.runPythonAsync(`
 import app
 `);
-  state.elements = JSON.parse(pyodide.runPython("app.elements_json()"));
+    state.elements = JSON.parse(pyodide.runPython("app.elements_json()"));
+  } catch (err) {
+    clearTimeout(slowTimer);
+    console.error(err);
+    spinner.hidden = true;
+    message.textContent = `Failed to start: ${err.message || err}. Check your connection or ad blocker, then retry.`;
+    const retry = document.createElement("button");
+    retry.textContent = "Retry";
+    retry.addEventListener("click", () => location.reload());
+    loading.appendChild(retry);
+    return;
+  }
+  clearTimeout(slowTimer);
 
-  document.getElementById("loading").hidden = true;
+  loading.hidden = true;
   document.getElementById("app").hidden = false;
 
   buildPeriodicTable();
